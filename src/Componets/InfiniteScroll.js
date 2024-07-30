@@ -1,52 +1,56 @@
-import React, { useEffect, useState } from "react";
+import React, { useState, useEffect, useCallback } from 'react';
+import axios from 'axios';
 
-const InfiniteScroll = () => { 
+const InfiniteScroll = () => {
+  const [images, setImages] = useState([]);
+  const [hasMore, setHasMore] = useState(true);
+  const [page, setPage] = useState(1);
+  const accessKey = 'la6_xHKMIAA6GTy3ugVmQXQa8-i5-R5cwZDmk56YBjs';
 
-    const [items,setItems] = useState([]);
-    const [hasMore,setHasMore] = useState(true);
-    const [page, setPage] = useState(1);
+  useEffect(() => {
+    loadMoreImages();
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
-    useEffect(() => {
-        loadMoreItems();
-        window.addEventListener('scroll',handleScroll);
-        return () => window.removeEventListener ('scroll',handleScroll)
+  const loadMoreImages = useCallback(() => {
+    axios
+      .get(`https://api.unsplash.com/photos`, {
+        params: { page: page, per_page: 10 },
+        headers: {
+          Authorization: `Client-ID ${accessKey}`
+        }
+      })
+      .then(response => {
+        setImages(prevImages => [...prevImages, ...response.data]);
+        if (response.data.length === 0 || response.data.length < 10) {
+          setHasMore(false);
+        }
+        setPage(prevPage => prevPage + 1);
+      })
+      .catch(error => console.error('Error loading images:', error));
+  }, [page, accessKey]);
 
-    }, [] );
-
-    const loadMoreItems = () => {
-        fetch(`https://jsonplaceholder.typicode.com/posts?_page=${page}&_limit=10`)
-            .then(response => response.json())
-            .then(data => {
-                setItems(prevItemes => [...prevItemes, ...data]);
-                if (data.length === 0 || data.length < 10) {
-                    setHasMore(false);
-
-                }
-                setPage(prevPage => prevPage + 1);   
-
-            })
-            .catch(error => console.error ('Error loading items:', error));
-
-   };
-
-   const handleScroll= () => {
-    if(window.innerHeight +  document.documentElement.scrollTop !== document.documentElement.offsetHeight || !hasMore){
-        return;
+  const handleScroll = () => {
+    if (window.innerHeight + document.documentElement.scrollTop + 100 >= document.documentElement.offsetHeight && hasMore) {
+      loadMoreImages();
     }
-    loadMoreItems();
-   };
-   return (
+  };
+
+  return (
     <div>
-      <h1> Scroll</h1>
-      <ul>
-        {items.map(item => (
-          <li key={item.id}>{item.title}</li>
+      <h1>Scroll</h1>
+      <h2>This is scroll</h2>
+      <div className="image-grid">
+        {images.map(image => (
+          <div key={image.id} className="image-item">
+            <img src={image.urls.small} alt={image.alt_description} />
+          </div>
         ))}
-      </ul>
-      {hasMore && <p>Loading more items...</p>}
+      </div>
+      {hasMore && <p>Loading more images...</p>}
     </div>
   );
 };
-
 
 export default InfiniteScroll;
