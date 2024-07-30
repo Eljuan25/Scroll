@@ -1,9 +1,9 @@
 /* src/App.css */
 
 .App {
+
   font-family: Arial, sans-serif;
   text-align: center;
-}
 
 .image-grid {
   display: grid;
@@ -21,4 +21,27 @@
 
 p {
   margin: 20px 0;
+}
+
+
+
+ul {
+  list-style-type:  none;
+  padding: 0;
+}
+
+
+
+li {
+
+  padding: 10px;
+  border-bottom: 1px solid #ccc;
+
+}
+
+
+p {
+  margin: 20px 0;
+
+
 }
