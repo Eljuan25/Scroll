@@ -1,8 +1,26 @@
+/* src/App.css */
+
 .App {
 
   font-family: Arial, sans-serif;
   text-align: center;
 
+.image-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 10px;
+  padding: 10px;
+}
+
+.image-item img {
+  width: 100%;
+  height: auto;
+  display: block;
+  border-radius: 8px;
+}
+
+p {
+  margin: 20px 0;
 }
 
 
@@ -18,7 +36,6 @@ li {
 
   padding: 10px;
   border-bottom: 1px solid #ccc;
-
 
 }
 
